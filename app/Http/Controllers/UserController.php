@@ -123,8 +123,8 @@ public function userSignUp(Request $request){
 
 public function verifyEmail(Request $request){
     $validator = Validator::make($request->all(),[
-        'code'=> 'required',
-        'email' => 'required|email',
+        'code'=> '',
+        'email' => 'email',
     ]);
 
     if($validator->fails()){
@@ -360,7 +360,8 @@ public function createNewToken($token){
         'access_token' => $token,
         'token_type' => 'bearer',
         'expires_in' => auth('api')->factory()->getTTL()* 60,
-        'user'=>auth()->user()
+        // 'user'=>auth()->user()
+        'message' => "Logged in successfully"
     ]);
 }
 

@@ -30,7 +30,7 @@ Route::group(['middleware'=>'api',
 
 Route:: post("user-signup","App\Http\Controllers\UserController@userSignUp");
 
-Route::post("user-login", "App\Http\Controllers\UserController@userLogin");
+Route::match(['get','post'],"user-login", "App\Http\Controllers\UserController@userLogin");
 
 Route::post("user-logout", "App\Http\Controllers\UserController@userLogout");
 
