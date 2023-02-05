@@ -78,5 +78,13 @@ Route::group(['middleware'=>'api',
 
 
 
+Route::group(['middleware'=>'api',
+              'prefix'=>'user'
+],function($router){
+
+    Route::post("user-booking","App\Http\Controllers\BookingController@storeReservation");
+
+});
+
 
 
