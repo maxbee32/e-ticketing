@@ -49,8 +49,9 @@ class BookingController extends Controller
             'city'=> 'required|string',
             'phone_number'=> 'required|regex:/^(\+\d{1,3}[- ]?)?\d{10}$/|min:10',
             'reservation_date'=> 'required|date',
-            'reservation_time'=>'required|date_format:H:i',
-            'no_of_ticket'=>'required|numeric'
+           // 'reservation_time'=>'required|date_format:H:i',
+            'no_of_ticket'=>'required|numeric',
+             //'status'=>'Pending'
 
         ]);
 
@@ -65,16 +66,27 @@ class BookingController extends Controller
             ], 400);
         }
         // $currentuserid = Auth::user()->id;
+        // print_r($currentuserid);
         //$user = DB::table('users')->where('id', $request->id)->first();
       //  $booking =
+       //$user_status  = User::where("id", $request->id)->first();
          Booking::create(array_merge(
-            ['user_id' => optional(auth()->user())->id],
+            ['user_id' => optional(Auth::user())->id],
             $validator-> validated()
         ));
 
         return $this->sendResponse(
             ['success'=>'true',
             'message'=>'Reservation completed successfully.'
+
+
+
         ], 201);
     }
 }
+
+
+
+// $user_status  = Booking::where("user_id", $request->user_id)->first();
+
+// if(!is_null($user_status))

@@ -7,12 +7,15 @@
     "require": {
         "php": "^8.0.2",
         "guzzlehttp/guzzle": "^7.2",
+        "haruncpi/laravel-id-generator": "^1.1",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
+        "laravel/slack-notification-channel": "^2.5",
         "laravel/socialite": "^5.5",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.1",
         "php-open-source-saver/jwt-auth": "^2.0",
+        "spatie/laravel-permission": "^5.9",
         "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {

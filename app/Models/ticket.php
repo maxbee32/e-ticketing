@@ -4,34 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
-class Booking extends Model
+
+class ticket extends Model
 {
-    use HasFactory;
+    use  HasFactory, Notifiable;
 
     protected $fillable = [
-
         'user_id',
-        'image',
+        'email',
+        'ticket_id',
         'firstname',
         'lastname',
         'gender',
         'country',
-        'region',
-        'city',
-        'phone_number',
         'reservation_date',
-       // 'reservation_time',
-        'no_of_ticket'
-
-    ];
-
-    protected $hidden =[
-
+        'no_of_ticket',
+        'total',
+        'created_at'
     ];
 
 
-    public function User(){
-        return $this->belongsTo('App\User');
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

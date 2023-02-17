@@ -17,9 +17,9 @@ use App\Http\Controllers\ResetPasswordController;
 */
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 
 
@@ -30,7 +30,7 @@ Route::group(['middleware'=>'api',
 
 Route:: post("user-signup","App\Http\Controllers\UserController@userSignUp");
 
-Route::match(['get','post'],"user-login", "App\Http\Controllers\UserController@userLogin");
+Route::post('user-login',"App\Http\Controllers\UserController@userLogin");
 
 Route::post("user-logout", "App\Http\Controllers\UserController@userLogout");
 
@@ -74,7 +74,20 @@ Route::group(['middleware'=>'api',
     Route::post("admin-user-verify-pin","App\Http\Controllers\AdminController@adminVerifyPin");
 
     Route::post("admin-user-reset-password","App\Http\Controllers\AdminController@adminResetPassword");
+
+    Route::post("admin-create-sys-user","App\Http\Controllers\AdminController@adminCreateSystemUser");
+
+    Route::patch("admin-update-permission","App\Http\Controllers\AdminController@adminUpdatePermission");
+
+    Route::put("admin-update-sys-user","App\Http\Controllers\AdminController@adminUpdateSystem");
+
+    Route::post("admin-create-categories","App\Http\Controllers\AdminController@createCategory");
+
+    Route::post("admin-show-categories","App\Http\Controllers\AdminController@showCategory");
     });
+
+
+
 
 
 
@@ -87,4 +100,7 @@ Route::group(['middleware'=>'api',
 });
 
 
+// Route::group(['middleware'=>'auth', 'prefix'=>'admin'],function($router){
+//     Route::post('admin-permission',)
+// })
 

@@ -5,11 +5,16 @@ namespace App\Http\Controllers;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Admin;
+use App\Models\Manager;
 use App\Mail\VerifyEmail;
+use App\Models\Permission;
 use App\Mail\ResetPassword;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use App\Mail\NotifyMangerMail;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Categories;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,6 +22,8 @@ class AdminController extends Controller
 
 
 {
+      //protected $guard_name='api';
+
     public function sendResponse($data, $message, $status = 200){
         $response =[
             'data' => $data,
@@ -36,7 +43,9 @@ class AdminController extends Controller
     }
 
     public function __construct(){
-        $this->middleware('auth:api', ['except'=>['adminSignUp', 'adminLogin','adminLogout','adminverifyEmail','adminresendPin','adminforgotPassword', 'adminverifyPin','adminresetPassword']]);
+        $this->middleware('auth:api', ['except'=>['adminSignUp', 'adminLogin','adminLogout','adminverifyEmail','adminresendPin','adminforgotPassword', 'adminverifyPin'
+        ,'adminresetPassword','adminCreateSystemUser', 'adminUpdatePermission', 'adminUpdateSystem',
+        'showCategory','createCategory']]);
     }
 
 
@@ -205,6 +214,7 @@ class AdminController extends Controller
             'email'=> 'required|email:rfc,filter,dns'
         ]);
 
+
         if($validator->fails()){
           return $this->sendError($validator->errors(),'Validation Error', 422);
 
@@ -237,8 +247,6 @@ class AdminController extends Controller
         }
 
     }
-
-
 
 
     public function adminForgotPassword(Request $request){
@@ -367,10 +375,6 @@ class AdminController extends Controller
         );
     }
 
-
-
-
-
     public function adminLogout(){
         try{
 
@@ -383,6 +387,140 @@ class AdminController extends Controller
 
 
 
+    }
+
+      // create new users and assign role
+    public function adminCreateSystemUser(Request $request){
+        $validator = Validator::make($request->all(),[
+            'name' => 'required',
+            'email' => 'required|email|',
+            'password' =>'required|confirmed',
+            'roles' => 'required'
+        ]);
+      //  $admin= new Manager();
+
+
+
+
+        if($validator-> fails()){
+
+            return $this->sendError($validator->errors(), 'Validation Error', 422);
+        }
+
+        $user_status  = Manager::where("email", $request->email)->first();
+
+            if(!is_null($user_status)){
+                return $this->sendError([], "Whoops! email already registered", 400);
+            }
+
+        $user = Manager::create(array_merge(
+                $validator-> validated(),
+                 ['password'=>bcrypt($request->password)]
+
+            ));
+
+            if($request->roles){
+                $user->assignRole($request->input('roles'));
+            }
+
+        // if($user){
+        //     Mail::to($request->all()['email'])->send(new NotifyMangerMail($email, $password));
+            return $this->sendResponse(
+                [
+                    'success' => true,
+                    'message' => "New system user successfully created",
+                ],
+                200
+            );
+        // }
+
+
+
+    }
+
+
+
+    public function adminUpdateSystem(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,'.$id,
+            'password' => 'required|confirmed',
+            'roles' => 'required'
+        ]);
+
+
+        $input = $request->all();
+        if(!empty($input['password'])){
+            $input['password'] = bcrypt($input['password']);
+        }else{
+            $input = Arr::except($input,array('password'));
+        }
+
+
+        $user = Manager::find($id);
+        $user->update($input);
+        DB::table('model_has_roles')->where('model_id',$id)->delete();
+
+
+        $user->assignRole($request->input('roles'));
+
+
+        return $this->sendResponse(
+            [
+                'success' => true,
+                'message' => "System user updated successfully",
+            ],
+            200
+        );
+    }
+
+
+
+    public function adminUpdatePermission(Request $request, Permission $permission){
+        $request->validate(['name'=>'required|string|unique:'.config('permission.table_names.permissions','permissions')
+        .',name,'.$permission->id]);
+        $permission->update(['name'=>$request->name,
+        'guard_name'=>'api']);
+
+            return $this->sendResponse(
+                [
+                    'success' => true,
+                    'message' => "Permission updated successfully",
+                ],
+                200
+            );
+
+    }
+
+    public function createCategory(Request $request){
+       // $image = $request->file('image')->store('public/categories');
+        $validator = Validator::make($request->all(),[
+            'name' => 'required',
+            'description' => 'required',
+            'image' =>'required' //| //$image
+
+        ]);
+        if($validator-> fails()){
+
+            return $this->sendError($validator->errors(), 'Validation Error', 422);
+        }
+         Categories::create(array_merge(
+            $validator-> validated()
+
+        ));
+        return $this->sendResponse(
+            [
+                'success' => true,
+                'message' => "New category created",
+            ],
+            200
+        );
+    }
+
+   //get all records for ctegories
+    public function showCategory(){
+        return Categories::all();
     }
 
 

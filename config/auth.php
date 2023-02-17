@@ -87,7 +87,7 @@ return [
             'model' => App\Models\Admin::class,
         ],
 
-        'manager' => [
+        'managers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Manager::class,
         ],
@@ -127,7 +127,7 @@ return [
             'throttle' => 60,
         ],
 
-        'admins' => [
+        'managers' => [
             'provider' => 'managers',
             'table' => 'reset_code_password',
             'expire' => 60,

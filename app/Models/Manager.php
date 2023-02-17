@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Manager extends Model
 {
-    use HasFactory;
 
+    use HasFactory,HasRoles;
+    
+    protected $guard_name='api';
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +19,7 @@ class Manager extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-       
+        'name',
         'email',
         'password',
     ];

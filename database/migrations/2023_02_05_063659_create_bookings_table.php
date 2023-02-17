@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('table_id');
             $table->string('image')->nullable();
             $table->string('firstname');
             $table->string('lastname');
@@ -24,9 +25,9 @@ return new class extends Migration
             $table->string('region');
             $table->string('city');
             $table->string('phone_number');
-            $table->date('reservation_date');
-            $table->time('reservation_time');
+            $table->dateTime('reservation_date');
             $table->integer('no_of_ticket');
+            $table->integer('guest_number');
             $table->timestamps();
 
             $table->foreign('user_id')

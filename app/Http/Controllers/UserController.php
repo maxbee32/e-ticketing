@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Booking;
 use App\Mail\VerifyEmail;
 use App\Mail\ResetPassword;
 use Illuminate\Http\Request;
@@ -52,11 +53,21 @@ public function userLogin(Request $request){
 
     }
 
-    if(!$token = auth()->attempt($validator->validated())){
+    if(!$token = Auth::attempt($validator->validated())){
         return $this->sendError([], "Invalid login credentials", 400);
     }
 
-     return $this-> createNewToken($token);
+    if(Auth::user()->email_verified_at == null){
+        return $this->sendError(
+            [
+                'success' => false,
+                'message' => 'Please verify your email before you can continue'
+            ],
+            401
+        );
+    }
+      $user= Auth::user();
+     return $this-> createNewToken($token,$user);
 
 
 }
@@ -79,13 +90,19 @@ public function userSignUp(Request $request){
             return $this->sendError([], "Whoops! email already registered", 400);
         }
 
-    $user = User:: create(array_merge(
-            $validator-> validated(),
-             ['password'=>bcrypt($request->password)]
-            //  ['confirm_password'=>bcrypt($request->confirm_password)]
+        $user = User:: create(array_merge(
+                $validator-> validated(),
+                ['password'=>bcrypt($request->password)]
+                //  ['confirm_password'=>bcrypt($request->confirm_password)]
 
 
-        ));
+            ));
+    //   $user = new User();
+    //   $user->email= $request->email;
+    //   $user->password= bcrypt($request->confirm_password);
+    //   $user->save();
+
+    //   $id = $user->id;
 
         if ($user ){
             $verify2 = DB::table('reset_code_password')->where([
@@ -337,13 +354,58 @@ public function resetPassword(Request $request)
 }
 
 
+  //store booking
+  public function storeReservation(Request $request){
+    $validator= Validator::make($request-> all(),[
+        'image' => 'nullable|dimensions:max_width=500,max_heigt=500|size=5000',
+        'firstname'=> 'required|string',
+        'lastname'=> 'required|string',
+        'gender'=> 'required|in:Male,Female',
+        'country'=> 'required|string',
+        'region'=> 'required|string',
+        'city'=> 'required|string',
+        'phone_number'=> 'required|regex:/^(\+\d{1,3}[- ]?)?\d{10}$/|min:10',
+        'reservation_date'=> 'required|dateTime',
+       // 'reservation_time'=>'required|date_format:H:i',
+        'no_of_ticket'=>'required|numeric'
+
+    ]);
+
+    if($validator-> fails()){
+
+        return $this->sendError($validator->errors(), 'Validation Error', 422);
+    }
+
+    if(Carbon::now()> $request->reservation_date){
+        return $this->sendError([
+            'success'=> false, 'message' => "Date in the past is not allowed. Kindly select a current date"
+        ], 400);
+    }
+    // $currentuserid = Auth::user()->id;
+    // print_r($currentuserid);
+    //$user = DB::table('users')->where('id', $request->id)->first();
+  //  $booking =
+   //$user_status  = User::where("id", $request->id)->first();
+       Booking::create(array_merge(
+        ['user_id' => optional(Auth::user())->id],
+        $validator-> validated()
+    ));
+
+    return $this->sendResponse(
+        ['success'=>'true',
+        'message'=>'Reservation completed successfully.'
 
 
 
-public function userLogout(){
+    ], 201);
+}
+
+
+
+   public function userLogout(){
     try{
 
-        auth()-> logout();
+        Auth::logout();
         return response()->json(['success'=>true,'message'=>'Logged out successfully']);
     }catch(\Exception $e){
         return response()->json(['success'=>false, 'message'=> $e->getMessage()]);
@@ -355,14 +417,16 @@ public function userLogout(){
 }
 
 
-public function createNewToken($token){
+public function createNewToken($token, $user){
     return response()->json([
         'access_token' => $token,
         'token_type' => 'bearer',
         'expires_in' => auth('api')->factory()->getTTL()* 60,
-        // 'user'=>auth()->user()
+         'user'=>$user,
         'message' => "Logged in successfully"
     ]);
 }
 
 }
+
+
