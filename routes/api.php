@@ -28,9 +28,9 @@ Route::group(['middleware'=>'api',
               'prefix'=>'auth'
 ],function($router){
 
-Route:: post("user-signup","App\Http\Controllers\UserController@userSignUp");
+Route:: post("/user-signup","App\Http\Controllers\UserController@userSignUp");
 
-Route::post('user-login',"App\Http\Controllers\UserController@userLogin");
+Route::post('/user-login',"App\Http\Controllers\UserController@userLogin");
 
 Route::post("user-logout", "App\Http\Controllers\UserController@userLogout");
 
