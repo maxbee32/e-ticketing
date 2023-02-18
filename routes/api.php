@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,7 @@ Route::group(['middleware'=>'api',
 
 Route:: post("user-signup","App\Http\Controllers\UserController@userSignUp");
 
-Route::post('user-login',"App\Http\Controllers\UserController@userLogin");
+Route::post('user-login',[UserController::class,'userLogin']);
 
 Route::post("user-logout", "App\Http\Controllers\UserController@userLogout");
 
