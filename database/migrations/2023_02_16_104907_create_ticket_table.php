@@ -31,33 +31,33 @@ return new class extends Migration
 
 
 
-            $table->foreign('user_id')
-            ->references('id')->on('users')
-            ->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreign('user_id')
+            // ->references('id')->on('users')
+            // ->onDelete('cascade')->onUpdate('cascade');
 
-            $table->foreign('image')
-            ->references('user_id')->on('bookings')
-            ->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreign('image')
+            // ->references('user_id')->on('bookings')
+            // ->onDelete('cascade')->onUpdate('cascade');
 
-            $table->foreign('firstname')
-            ->references('user_id')->on('bookings')
-            ->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreign('firstname')
+            // ->references('user_id')->on('bookings')
+            // ->onDelete('cascade')->onUpdate('cascade');
 
-            $table->foreign('lastname')
-            ->references('user_id')->on('bookings')
-            ->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreign('lastname')
+            // ->references('user_id')->on('bookings')
+            // ->onDelete('cascade')->onUpdate('cascade');
 
-            $table->foreign('gender')
-            ->references('user_id')->on('bookings')
-            ->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreign('gender')
+            // ->references('user_id')->on('bookings')
+            // ->onDelete('cascade')->onUpdate('cascade');
 
-            $table->foreign('country')
-            ->references('user_id')->on('bookings')
-            ->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreign('country')
+            // ->references('user_id')->on('bookings')
+            // ->onDelete('cascade')->onUpdate('cascade');
 
-            $table->foreign('no_of_ticket')
-            ->references('user_id')->on('bookings')
-            ->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreign('no_of_ticket')
+            // ->references('user_id')->on('bookings')
+            // ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
