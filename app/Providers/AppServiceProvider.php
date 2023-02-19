@@ -30,9 +30,9 @@ class AppServiceProvider extends ServiceProvider
     // }
     public function boot(UrlGenerator $url)
     {
-        if (env('APP_ENV') == 'production') {
-            $url->forceScheme('https');
-        }
+        // if (env('APP_ENV') == 'production') {
+        //     $url->forceScheme('https');
+        // }
     }
     // {
     //     if (!empty( env('NGROK_URL') ) && $request->server->has('HTTP_X_ORIGINAL_HOST')) {
