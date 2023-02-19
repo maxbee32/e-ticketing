@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
 
+    protected $guard_name='api';
      public function sendResponse($data, $message, $status = 200){
         $response =[
             'data' => $data,
